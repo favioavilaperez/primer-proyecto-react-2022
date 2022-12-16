@@ -1,8 +1,33 @@
+import axios from "axios"
+import { useEffect, useState } from "react"
+
 function App() {
 
-  return (
-    <h1>HOLA MUNDO</h1>
+  const API_URL = import.meta.env.VITE_API_URL
+  const [criptos, setCriptos] = useState()
 
+  useEffect(() => {
+    axios.get(`${API_URL}assets`)
+      .then((data) => {
+          setCriptos(data.data.data)
+    }) 
+    .catch(() => {
+      console.error("La peticion fallo")
+    }) 
+  }, [])
+
+  if (!criptos) return <span>Cargando...</span>
+
+  return (
+    <>
+      <h1>Lista de Criptomonedas</h1>
+      <ol>
+        {criptos.map(({id, name, priceUsd}) => (
+          <li key={id}> Nombre: {name} Precio: {priceUsd}</li>
+          ))
+        }
+      </ol>
+    </>
   )
 }
 
